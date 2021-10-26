@@ -4,8 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "rimraf ./public/scripts && tsc -p tsconfig-dev.json",
+    "open": "http-server public",
+    "build": "rimraf ./public/scripts && tsc"
   },
+  "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.4.3",
+    "http-server": "^13.0.1",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {}
 }
