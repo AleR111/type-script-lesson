@@ -6,15 +6,20 @@
   "scripts": {
     "dev": "rimraf ./public/scripts && tsc -p tsconfig-dev.json",
     "open": "http-server public",
-    "build": "rimraf ./public/scripts && tsc"
+    "build": "rimraf ./public/scripts && tsc",
+    "lint": "eslint src --ext .js --ext .ts",
+    "lint-fix": "eslint src --ext .js --ext .ts --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^4.4.3",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.2.0",
+    "eslint": "^8.1.0",
     "http-server": "^13.0.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.3"
   },
   "dependencies": {}
 }
