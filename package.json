@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "rimraf ./public/scripts && tsc -p tsconfig-dev.json",
+    "dev": "rimraf ./public/scripts && tsc -p tsconfig.dev.json",
     "open": "http-server public",
     "build": "rimraf ./public/scripts && tsc",
     "lint": "eslint src --ext .js --ext .ts",

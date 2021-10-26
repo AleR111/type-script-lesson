@@ -1,8 +1,8 @@
-import { renderBlock } from './lib.ts';
+import { renderBlock } from "./lib.js";
 
 export function renderSearchFormBlock() {
   renderBlock(
-    'search-form-block',
+    "search-form-block",
     `
     <form>
       <fieldset class="search-filedset">
