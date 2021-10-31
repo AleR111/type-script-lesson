@@ -4,7 +4,9 @@ import { formatDate, getLastDayOfNextMonth, shiftDate } from "./date-utils.js";
 export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   const nowDate = new Date();
   const checkIn = formatDate(checkInDate || shiftDate(nowDate, 1));
-  const checkOut = formatDate(checkOutDate || shiftDate(checkInDate, 2));
+  const checkOut = formatDate(
+    checkOutDate || shiftDate(checkInDate || nowDate, 2)
+  );
   const minDate = formatDate(nowDate);
   const maxDate = formatDate(getLastDayOfNextMonth(nowDate));
   renderBlock(
