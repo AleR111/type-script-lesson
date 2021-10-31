@@ -1,5 +1,5 @@
-import { renderBlock } from "./lib.js";
-import { formatDate, getLastDayOfNextMonth, shiftDate } from "./date-utils.js";
+import { renderBlock } from './lib.js';
+import { formatDate, getLastDayOfNextMonth, shiftDate } from './date-utils.js';
 
 export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   const nowDate = new Date();
@@ -10,7 +10,7 @@ export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   const minDate = formatDate(nowDate);
   const maxDate = formatDate(getLastDayOfNextMonth(nowDate));
   renderBlock(
-    "search-form-block",
+    'search-form-block',
     `
     <form>
       <fieldset class="search-filedset">
