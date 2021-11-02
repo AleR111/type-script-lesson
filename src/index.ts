@@ -2,12 +2,17 @@ import { renderSearchFormBlock } from './search-form.js';
 import { renderSearchStubBlock } from './search-results.js';
 import { renderUserBlock } from './user.js';
 import { renderToast } from './lib.js';
-import {setLocalStorage} from './getData.js';
+import {setLocalStorage, getUserData, getFavoritesAmount, UserData, isUserData} from './getData.js';
 
 setLocalStorage()
+const favoritesAmount = getFavoritesAmount()
+const numberFavoritesAmount = typeof favoritesAmount === 'number' ? favoritesAmount : null
+
+const gettingUserData = getUserData()
+const userData = isUserData(gettingUserData)  ? gettingUserData : null
 
 window.addEventListener('DOMContentLoaded', () => {
-  renderUserBlock('Wade Warren', '/img/avatar.png', 0);
+  renderUserBlock(userData.userName, userData.avatarUrl, numberFavoritesAmount);
   renderSearchFormBlock();
   renderSearchStubBlock();
   renderToast(

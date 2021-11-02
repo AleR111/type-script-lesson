@@ -3,7 +3,7 @@ import { renderBlock } from './lib.js';
 export function renderUserBlock(
   name: string,
   avatarUrl: string,
-  favoriteItemsAmount: number
+  favoriteItemsAmount?: number
 ) {
   const favoritesCaption = favoriteItemsAmount
     ? favoriteItemsAmount
