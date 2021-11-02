@@ -47,3 +47,30 @@ export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
     `
   );
 }
+
+interface SearchFormData {
+  city: string,
+  checkIn: string,
+  checkOut: string,
+  maxPrice: number
+}
+
+const search = (data: SearchFormData): void => {
+  console.log(data)
+}
+
+export const searchHandler = (): void => {
+  const city = document.getElementById('city') as HTMLInputElement
+  const checkIn = document.getElementById('check-in-date') as HTMLInputElement
+  const checkOut = document.getElementById('check-out-date') as HTMLInputElement
+  const maxPrice = document.getElementById('max-price') as HTMLInputElement
+
+  const searchData: SearchFormData = {
+    city: city.value,
+    checkIn: checkIn.value,
+    checkOut: checkOut.value,
+    maxPrice: Number(maxPrice.value)
+  }
+
+  search(searchData)
+}

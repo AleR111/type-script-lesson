@@ -1,8 +1,8 @@
-import { renderSearchFormBlock } from './search-form.js';
+import { renderSearchFormBlock, searchHandler } from './search-form.js';
 import { renderSearchStubBlock } from './search-results.js';
 import { renderUserBlock } from './user.js';
 import { renderToast } from './lib.js';
-import {setLocalStorage, getUserData, getFavoritesAmount, UserData, isUserData} from './getData.js';
+import {setLocalStorage, getUserData, getFavoritesAmount, isUserData} from './getData.js';
 
 setLocalStorage()
 const favoritesAmount = getFavoritesAmount()
@@ -27,4 +27,5 @@ window.addEventListener('DOMContentLoaded', () => {
       },
     }
   );
+  searchHandler()
 });
