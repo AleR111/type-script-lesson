@@ -27,5 +27,8 @@ window.addEventListener('DOMContentLoaded', () => {
       },
     }
   );
-  searchHandler()
+  document.getElementById('search').addEventListener('click', (e) => {
+    e.preventDefault()
+    searchHandler()
+  })
 });
