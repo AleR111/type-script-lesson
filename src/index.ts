@@ -1,22 +1,31 @@
-import { renderSearchFormBlock } from "./search-form.js";
-import { renderSearchStubBlock } from "./search-results.js";
-import { renderUserBlock } from "./user.js";
-import { renderToast } from "./lib.js";
+import { renderSearchFormBlock, searchHandler } from './search-form.js';
+import { renderSearchStubBlock } from './search-results.js';
+import { renderUserBlock } from './user.js';
+import { renderToast } from './lib.js';
+import {setLocalStorage, getUserData, getFavoritesAmount, isUserData} from './getData.js';
 
-window.addEventListener("DOMContentLoaded", () => {
-  renderUserBlock("Wade Warren", "/img/avatar.png", 0);
-  renderSearchFormBlock(new Date("10/10/2021"), new Date("10/12/2021"));
+setLocalStorage()
+const favoritesAmount = getFavoritesAmount()
+const numberFavoritesAmount = typeof favoritesAmount === 'number' ? favoritesAmount : null
+
+const gettingUserData = getUserData()
+const userData = isUserData(gettingUserData)  ? gettingUserData : null
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderUserBlock(userData.userName, userData.avatarUrl, numberFavoritesAmount);
+  renderSearchFormBlock();
   renderSearchStubBlock();
   renderToast(
     {
-      text: "Это пример уведомления. Используйте его при необходимости",
-      type: "success",
+      text: 'Это пример уведомления. Используйте его при необходимости',
+      type: 'success',
     },
     {
-      name: "Понял",
+      name: 'Понял',
       handler: () => {
-        console.log("Уведомление закрыто");
+        console.log('Уведомление закрыто');
       },
     }
   );
+  searchHandler()
 });

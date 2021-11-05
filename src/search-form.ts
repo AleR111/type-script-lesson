@@ -1,14 +1,16 @@
-import { renderBlock } from "./lib.js";
-import { formatDate, getLastDayOfNextMonth, shiftDate } from "./date-utils.js";
+import { renderBlock } from './lib.js';
+import { formatDate, getLastDayOfNextMonth, shiftDate } from './date-utils.js';
 
 export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   const nowDate = new Date();
   const checkIn = formatDate(checkInDate || shiftDate(nowDate, 1));
-  const checkOut = formatDate(checkOutDate || shiftDate(checkInDate, 2));
+  const checkOut = formatDate(
+    checkOutDate || shiftDate(checkInDate || nowDate, 2)
+  );
   const minDate = formatDate(nowDate);
   const maxDate = formatDate(getLastDayOfNextMonth(nowDate));
   renderBlock(
-    "search-form-block",
+    'search-form-block',
     `
     <form>
       <fieldset class="search-filedset">
@@ -44,4 +46,31 @@ export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
     </form>
     `
   );
+}
+
+interface SearchFormData {
+  city: string,
+  checkIn: string,
+  checkOut: string,
+  maxPrice: number
+}
+
+const search = (data: SearchFormData): void => {
+  console.log(data)
+}
+
+export const searchHandler = (): void => {
+  const city = document.getElementById('city') as HTMLInputElement
+  const checkIn = document.getElementById('check-in-date') as HTMLInputElement
+  const checkOut = document.getElementById('check-out-date') as HTMLInputElement
+  const maxPrice = document.getElementById('max-price') as HTMLInputElement
+
+  const searchData: SearchFormData = {
+    city: city.value,
+    checkIn: checkIn.value,
+    checkOut: checkOut.value,
+    maxPrice: Number(maxPrice.value)
+  }
+
+  search(searchData)
 }

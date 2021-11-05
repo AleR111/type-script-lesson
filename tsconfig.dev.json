@@ -3,6 +3,6 @@
   "compilerOptions": {
     "watch": true,
     "inlineSourceMap": true,
-    "inlineSources": true
+    "inlineSources": true,
   }
 }

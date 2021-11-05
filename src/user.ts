@@ -1,17 +1,17 @@
-import { renderBlock } from "./lib.js";
+import { renderBlock } from './lib.js';
 
 export function renderUserBlock(
   name: string,
   avatarUrl: string,
-  favoriteItemsAmount: number
+  favoriteItemsAmount?: number
 ) {
   const favoritesCaption = favoriteItemsAmount
     ? favoriteItemsAmount
-    : "ничего нет";
+    : 'ничего нет';
   const hasFavoriteItems = !!favoriteItemsAmount;
 
   renderBlock(
-    "user-block",
+    'user-block',
     `
     <div class="header-container">
       <img class="avatar" src="${avatarUrl}" alt="${name}" />
@@ -19,8 +19,8 @@ export function renderUserBlock(
           <p class="name">${name}</p>
           <p class="fav">
             <i class="heart-icon${
-              hasFavoriteItems ? " active" : ""
-            }"></i>${favoritesCaption}
+  hasFavoriteItems ? ' active' : ''
+}"></i>${favoritesCaption}
           </p>
       </div>
     </div>
