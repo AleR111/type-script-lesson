@@ -26,7 +26,7 @@ export function renderEmptyOrErrorSearchBlock(reasonMessage) {
 }
 
 export function renderSearchResultsBlock(data?: Place) {
-
+  console.log(data)
   if (!data) renderBlock('search-results-block',
     `<div class="search-results-header">
             <p>Не удалось найти</p>

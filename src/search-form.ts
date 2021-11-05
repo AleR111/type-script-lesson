@@ -68,6 +68,7 @@ export interface Place {
 
 const search = (searchData: SearchFormData) => {
   console.log(searchData)
+
   fetch('http://localhost:3000/places')
     .then((response) => {
       return response.text()
@@ -76,6 +77,9 @@ const search = (searchData: SearchFormData) => {
       return JSON.parse(responseText)
     })
     .then((data) => {
+      for(const el in data) {
+        if (data[el].price > searchData.maxPrice) delete data[el]
+      }
       if(!Object.keys(data).length) renderSearchResultsBlock()
       else renderSearchResultsBlock(data)
     })
