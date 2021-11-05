@@ -1,4 +1,5 @@
 import { renderBlock } from './lib.js';
+import { Place } from './search-form.js'
 
 export function renderSearchStubBlock() {
   renderBlock(
@@ -24,10 +25,16 @@ export function renderEmptyOrErrorSearchBlock(reasonMessage) {
   );
 }
 
-export function renderSearchResultsBlock() {
-  renderBlock(
-    'search-results-block',
-    `
+export function renderSearchResultsBlock(data?: Place) {
+
+  if (!data) renderBlock('search-results-block',
+    `<div class="search-results-header">
+            <p>Не удалось найти</p>
+          </div>`)
+  else {
+    renderBlock(
+      'search-results-block',
+      `
     <div class="search-results-header">
         <p>Результаты поиска</p>
         <div class="search-results-filter">
@@ -84,5 +91,6 @@ export function renderSearchResultsBlock() {
       </li>
     </ul>
     `
-  );
+    );
+  }
 }

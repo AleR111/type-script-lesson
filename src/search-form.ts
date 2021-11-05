@@ -1,5 +1,6 @@
 import { renderBlock } from './lib.js';
 import { formatDate, getLastDayOfNextMonth, shiftDate } from './date-utils.js';
+import { renderSearchResultsBlock } from './search-results.js'
 
 export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   const nowDate = new Date();
@@ -55,8 +56,29 @@ interface SearchFormData {
   maxPrice: number
 }
 
-const search = (data: SearchFormData): void => {
-  console.log(data)
+export interface Place {
+    bookedDates: Array<any>,
+    description: string,
+    id: number,
+    image: string,
+    name: string,
+    price: number,
+    remoteness: number
+}
+
+const search = (searchData: SearchFormData) => {
+  console.log(searchData)
+  fetch('http://localhost:3000/places')
+    .then((response) => {
+      return response.text()
+    })
+    .then<Place>((responseText) => {
+      return JSON.parse(responseText)
+    })
+    .then((data) => {
+      if(!Object.keys(data).length) renderSearchResultsBlock()
+      else renderSearchResultsBlock(data)
+    })
 }
 
 export const searchHandler = (): void => {
