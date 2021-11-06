@@ -1,5 +1,7 @@
 import { renderBlock } from './lib.js';
-import { Place } from './search-form.js'
+import {Place} from './search-form.js'
+import { getUserData, isUserData} from './getData.js';
+import {renderUserBlock} from './user.js';
 
 export function renderSearchStubBlock() {
   renderBlock(
@@ -25,9 +27,55 @@ export function renderEmptyOrErrorSearchBlock(reasonMessage) {
   );
 }
 
+interface FavoriteItem {
+  id: number,
+  name: string,
+  image: string
+}
+
+const toggleFavoriteItem = (e: Event, data: Place): void => {
+  const button = e.target as HTMLInputElement
+
+  if (!button.classList.contains('favorites')) return
+
+  const favoriteItemsJSON = localStorage.getItem('favoriteItems')
+  const favoriteItems = JSON.parse(favoriteItemsJSON) || {}
+
+  const favoritesAmountJSON = localStorage.getItem('favoritesAmount')
+  let favoritesAmount = JSON.parse(favoritesAmountJSON) || 0
+  console.log(favoriteItems)
+  if (!favoriteItems[button.id]) {
+    button.classList.add('active')
+
+    const favoriteItem: FavoriteItem = {
+      id: data[button.id].id,
+      name: data[button.id].name,
+      image: data[button.id].image
+    }
+    favoriteItems[button.id] = favoriteItem
+    console.log(button.id, favoriteItems)
+    favoritesAmount++
+  } else {
+    (e.target as HTMLInputElement).classList.remove('active')
+    delete favoriteItems[button.id]
+    favoritesAmount--
+  }
+
+  localStorage.setItem('favoriteItems', JSON.stringify(favoriteItems));
+  localStorage.setItem('favoritesAmount', JSON.stringify(favoritesAmount))
+
+  const numberFavoritesAmount = typeof favoritesAmount === 'number' ? favoritesAmount : null
+
+  const gettingUserData = getUserData()
+  const userData = isUserData(gettingUserData)  ? gettingUserData : null
+
+  renderUserBlock(userData.userName, userData.avatarUrl, numberFavoritesAmount);
+}
+
+
 export function renderSearchResultsBlock(data?: Place) {
   console.log(data)
-  let list: string = ''
+  let list = ''
 
   if (!data) renderBlock('search-results-block',
     `<div class="search-results-header">
@@ -38,7 +86,7 @@ export function renderSearchResultsBlock(data?: Place) {
       list += `<li class="result">
         <div class="result-container">
           <div class="result-img-container">
-            <div class="favorites active"></div>
+            <div id="${el}" class="favorites"></div>
             <img class="result-img" src="${data[el].image}" alt="">
           </div>	
           <div class="result-info">
@@ -76,5 +124,10 @@ export function renderSearchResultsBlock(data?: Place) {
     </ul>
     `
     );
+
+    document.getElementsByClassName('results-list')[0]
+      .addEventListener('click', (e: Event): void => {
+        toggleFavoriteItem(e, data)
+      })
   }
 }

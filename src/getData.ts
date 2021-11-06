@@ -11,7 +11,7 @@ export const setLocalStorage = (): void => {
 
   const userDataJSON = JSON.stringify(userData)
   localStorage.setItem('user', userDataJSON);
-  localStorage.setItem('favoritesAmount', '3')
+  // localStorage.setItem('favoritesAmount', '3')
 };
 
 export const  getUserData = (): unknown => {
