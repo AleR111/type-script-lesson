@@ -1,7 +1,6 @@
 import { renderBlock } from './lib.js';
 import {Place} from './search-form.js'
-import { getUserData, isUserData} from './getData.js';
-import {renderUserBlock} from './user.js';
+import {reRenderUserBlock} from './index.js';
 
 export function renderSearchStubBlock() {
   renderBlock(
@@ -27,10 +26,9 @@ export function renderEmptyOrErrorSearchBlock(reasonMessage) {
   );
 }
 
-interface FavoriteItem {
-  id: number,
-  name: string,
-  image: string
+const isFavoriteItem = (obj: unknown): obj is object => {
+  return typeof obj === 'object'
+    && obj !== null
 }
 
 const toggleFavoriteItem = (e: Event, data: Place): void => {
@@ -39,37 +37,34 @@ const toggleFavoriteItem = (e: Event, data: Place): void => {
   if (!button.classList.contains('favorites')) return
 
   const favoriteItemsJSON = localStorage.getItem('favoriteItems')
-  const favoriteItems = JSON.parse(favoriteItemsJSON) || {}
+  const favoriteItems = JSON.parse(favoriteItemsJSON)
+  const favoriteItemsData = isFavoriteItem(favoriteItems) ? favoriteItems : {}
 
   const favoritesAmountJSON = localStorage.getItem('favoritesAmount')
-  let favoritesAmount = JSON.parse(favoritesAmountJSON) || 0
-  console.log(favoriteItems)
-  if (!favoriteItems[button.id]) {
+  const favoritesAmount = JSON.parse(favoritesAmountJSON)
+  let numberFavoritesAmount = typeof favoritesAmount === 'number' ? favoritesAmount : 0
+
+  if (!favoriteItemsData[button.id]) {
     button.classList.add('active')
 
-    const favoriteItem: FavoriteItem = {
+    const favoriteItem: Partial<Place> = {
       id: data[button.id].id,
       name: data[button.id].name,
       image: data[button.id].image
     }
-    favoriteItems[button.id] = favoriteItem
-    console.log(button.id, favoriteItems)
-    favoritesAmount++
+
+    favoriteItemsData[button.id] = favoriteItem
+    numberFavoritesAmount++
   } else {
     (e.target as HTMLInputElement).classList.remove('active')
-    delete favoriteItems[button.id]
-    favoritesAmount--
+    delete favoriteItemsData[button.id]
+    numberFavoritesAmount--
   }
 
-  localStorage.setItem('favoriteItems', JSON.stringify(favoriteItems));
-  localStorage.setItem('favoritesAmount', JSON.stringify(favoritesAmount))
+  localStorage.setItem('favoriteItems', JSON.stringify(favoriteItemsData));
+  localStorage.setItem('favoritesAmount', JSON.stringify(numberFavoritesAmount))
 
-  const numberFavoritesAmount = typeof favoritesAmount === 'number' ? favoritesAmount : null
-
-  const gettingUserData = getUserData()
-  const userData = isUserData(gettingUserData)  ? gettingUserData : null
-
-  renderUserBlock(userData.userName, userData.avatarUrl, numberFavoritesAmount);
+  reRenderUserBlock(numberFavoritesAmount)
 }
 
 

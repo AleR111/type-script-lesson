@@ -11,6 +11,10 @@ const numberFavoritesAmount = typeof favoritesAmount === 'number' ? favoritesAmo
 const gettingUserData = getUserData()
 const userData = isUserData(gettingUserData)  ? gettingUserData : null
 
+export const reRenderUserBlock = (numberFavoritesAmount: number): void => {
+  renderUserBlock(userData.userName, userData.avatarUrl, numberFavoritesAmount);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   renderUserBlock(userData.userName, userData.avatarUrl, numberFavoritesAmount);
   renderSearchFormBlock();
