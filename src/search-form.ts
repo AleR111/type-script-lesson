@@ -66,6 +66,10 @@ export interface Place {
     remoteness: number
 }
 
+export interface Places {
+  [key: string]: Place
+}
+
 const search = (searchData: SearchFormData) => {
   console.log(searchData)
 
@@ -73,7 +77,7 @@ const search = (searchData: SearchFormData) => {
     .then((response) => {
       return response.text()
     })
-    .then<Place>((responseText) => {
+    .then<Places>((responseText) => {
       return JSON.parse(responseText)
     })
     .then((data) => {

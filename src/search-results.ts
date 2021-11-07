@@ -1,5 +1,5 @@
 import { renderBlock } from './lib.js';
-import {Place} from './search-form.js'
+import {Place, Places} from './search-form.js'
 import {reRenderUserBlock} from './index.js';
 
 export function renderSearchStubBlock() {
@@ -26,19 +26,23 @@ export function renderEmptyOrErrorSearchBlock(reasonMessage) {
   );
 }
 
-const isFavoriteItem = (obj: unknown): obj is object => {
+interface FavoritePlaces {
+  [key: string]: Partial<Place>
+}
+
+const isFavoriteItem = (obj: unknown): obj is FavoritePlaces => {
   return typeof obj === 'object'
     && obj !== null
 }
 
-const toggleFavoriteItem = (e: Event, data: Place): void => {
+const toggleFavoriteItem = (e: Event, data: Places): void => {
   const button = e.target as HTMLInputElement
 
   if (!button.classList.contains('favorites')) return
 
   const favoriteItemsJSON = localStorage.getItem('favoriteItems')
   const favoriteItems = JSON.parse(favoriteItemsJSON)
-  const favoriteItemsData = isFavoriteItem(favoriteItems) ? favoriteItems : {}
+  const favoriteItemsData = isFavoriteItem(favoriteItems) ? favoriteItems : {} as Places
 
   const favoritesAmountJSON = localStorage.getItem('favoritesAmount')
   const favoritesAmount = JSON.parse(favoritesAmountJSON)
@@ -68,7 +72,7 @@ const toggleFavoriteItem = (e: Event, data: Place): void => {
 }
 
 
-export function renderSearchResultsBlock(data?: Place) {
+export function renderSearchResultsBlock(data?: Places) {
   console.log(data)
   let list = ''
 
