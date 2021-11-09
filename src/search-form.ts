@@ -21,10 +21,10 @@ export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
             <input id="city" type="text" disabled value="Санкт-Петербург" />
             <input type="hidden" disabled value="59.9386,30.3141" />
           </div>
-          <!--<div class="providers">
+          <div class="providers">
             <label><input type="checkbox" name="provider" value="homy" checked /> Homy</label>
             <label><input type="checkbox" name="provider" value="flat-rent" checked /> FlatRent</label>
-          </div>--!>
+          </div>
         </div>
         <div class="row">
           <div>
@@ -70,8 +70,10 @@ export interface Places {
   [key: string]: Place
 }
 
-const search = (searchData: SearchFormData) => {
-  console.log(searchData)
+export type SelectedProviders = Record<string, boolean>
+
+const search = (searchData: SearchFormData, providers: SelectedProviders) => {
+  console.log(searchData, providers)
 
   fetch('http://localhost:3000/places')
     .then((response) => {
@@ -94,6 +96,7 @@ export const searchHandler = (): void => {
   const checkIn = document.getElementById('check-in-date') as HTMLInputElement
   const checkOut = document.getElementById('check-out-date') as HTMLInputElement
   const maxPrice = document.getElementById('max-price') as HTMLInputElement
+  const provider = document.getElementsByName('provider') as  NodeListOf<HTMLInputElement>
 
   const searchData: SearchFormData = {
     city: city.value,
@@ -101,6 +104,10 @@ export const searchHandler = (): void => {
     checkOut: checkOut.value,
     maxPrice: Number(maxPrice.value)
   }
+  const selectedProviders = {} as SelectedProviders
+  for (const el of provider) {
+    selectedProviders[el.value] = el.checked
+  }
 
-  search(searchData)
+  search(searchData, selectedProviders)
 }
