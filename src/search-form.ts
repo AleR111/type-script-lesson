@@ -1,6 +1,7 @@
 import { renderBlock } from './lib.js';
 import { formatDate, getLastDayOfNextMonth, shiftDate } from './date-utils.js';
 import { renderSearchResultsBlock } from './search-results.js'
+import {FlatRentSdk, SearchParam} from './sdk/flat-rent-sdk.js';
 
 export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   const nowDate = new Date();
@@ -49,12 +50,12 @@ export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   );
 }
 
-interface SearchFormData {
-  city: string,
-  checkIn: string,
-  checkOut: string,
-  maxPrice: number
-}
+// interface SearchFormData {
+//   city: string,
+//   checkInDate: Date,
+//   checkOutDate: Date,
+//   priceLimit?: number
+// }
 
 export interface Place {
     bookedDates: Array<any>,
@@ -66,29 +67,100 @@ export interface Place {
     remoteness: number
 }
 
-export interface Places {
-  [key: string]: Place
-}
+export type Places = Record<string, Place>
 
 export type SelectedProviders = Record<string, boolean>
 
-const search = (searchData: SearchFormData, providers: SelectedProviders) => {
-  console.log(searchData, providers)
 
-  fetch('http://localhost:3000/places')
-    .then((response) => {
-      return response.text()
+
+class ProvidersData {
+  homyData: Places
+  flatData: Places
+  constructor() {
+    this.homyData = null
+    this.flatData = null
+  }
+
+  loadHomy = () => {
+    if (!this.homyData) {
+      return fetch('http://localhost:3000/places')
+        .then((response) => {
+          return response.text()
+        })
+        .then<Places>((responseText) => {
+          return JSON.parse(responseText)
+        }).then((data) => {
+          this.homyData = data
+          return data
+        })
+    } else return Promise.resolve(this.homyData)
+  }
+
+  loadFlatRent = (searchData: SearchParam) => {
+    if (!this.flatData) {
+      return sdk.search(searchData)
+        .then(data => {
+          const lastIndex = this.homyData ? Object.keys(this.homyData).length : 0
+          const formatData = {}
+          data.forEach((el, index) => {
+            console.log(el)
+            formatData[lastIndex + index + 1] = {
+              bookedDates: el.bookedDates,
+              description: el.details,
+              id: el.id,
+              image: el.photos[0],
+              name: el.title,
+              price: el.totalPrice,
+              remoteness: 0
+            }
+          })
+          this.flatData = formatData
+          console.log(this.flatData)
+          return formatData
+        })
+    } else return Promise.resolve(this.flatData)
+  }
+}
+
+const providersData = new ProvidersData()
+const sdk = new FlatRentSdk()
+
+const search = (searchData: SearchParam, providers: SelectedProviders) => {
+
+  if (providers.homy && providers['flat-rent']) {
+    providersData.loadHomy().then((data) => {
+      for (const el in data) {
+        if (data[el].price > searchData.priceLimit) delete data[el]
+      }
+      return data
     })
-    .then<Places>((responseText) => {
-      return JSON.parse(responseText)
-    })
-    .then((data) => {
-      for(const el in data) {
-        if (data[el].price > searchData.maxPrice) delete data[el]
+      .then(data => {
+        const result = {...data}
+        providersData.loadFlatRent(searchData).then((dataFR) => {
+          if(!Object.keys(result).length) renderSearchResultsBlock()
+          else renderSearchResultsBlock({...result, ...dataFR})
+        })
+      })
+    return
+  }
+
+  if (providers.homy) {
+    providersData.loadHomy().then((data) => {
+      for (const el in data) {
+        if (data[el].price > searchData.priceLimit) delete data[el]
       }
       if(!Object.keys(data).length) renderSearchResultsBlock()
       else renderSearchResultsBlock(data)
     })
+    return
+  }
+  if (providers['flat-rent']) {
+    providersData.loadFlatRent(searchData).then((data) => {
+      if(!Object.keys(data).length) renderSearchResultsBlock()
+      else renderSearchResultsBlock(data)
+    })
+    return;
+  }
 }
 
 export const searchHandler = (): void => {
@@ -98,11 +170,11 @@ export const searchHandler = (): void => {
   const maxPrice = document.getElementById('max-price') as HTMLInputElement
   const provider = document.getElementsByName('provider') as  NodeListOf<HTMLInputElement>
 
-  const searchData: SearchFormData = {
+  const searchData: SearchParam = {
     city: city.value,
-    checkIn: checkIn.value,
-    checkOut: checkOut.value,
-    maxPrice: Number(maxPrice.value)
+    checkInDate: new Date(checkIn.value),
+    checkOutDate: new Date(checkOut.value),
+    priceLimit: Number(maxPrice.value)
   }
   const selectedProviders = {} as SelectedProviders
   for (const el of provider) {

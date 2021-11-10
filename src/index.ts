@@ -3,9 +3,6 @@ import { renderSearchStubBlock } from './search-results.js';
 import { renderUserBlock } from './user.js';
 import { renderToast } from './lib.js';
 import {setLocalStorage, getUserData, getFavoritesAmount, isUserData} from './getData.js';
-import {FlatRentSdk} from './sdk/flat-rent-sdk.js'
-
-const sdk = new FlatRentSdk()
 
 setLocalStorage()
 const favoritesAmount = getFavoritesAmount()
