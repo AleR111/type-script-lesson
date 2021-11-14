@@ -4,7 +4,6 @@ import { renderSearchResultsBlock } from './search-results.js'
 import { SearchParam } from './sdk/flat-rent-sdk.js';
 import { HomeProvider } from './store/providers/home/home-provider.js';
 import { FlatRentProvider } from './store/providers/flat-rent/flat-rent-provider.js';
-// import { Provider } from './store/domain/provider.js';
 
 export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   const nowDate = new Date();
@@ -53,80 +52,7 @@ export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   );
 }
 
-// interface SearchFormData {
-//   city: string,
-//   checkInDate: Date,
-//   checkOutDate: Date,
-//   priceLimit?: number
-// }
-
-// export interface Place {
-//     bookedDates: Array<any>,
-//     description: string,
-//     id: number,
-//     image: string,
-//     name: string,
-//     price: number,
-//     remoteness: number
-// }
-
-// export type Places = Record<string, Place>
-
 export type SelectedProviders = Record<string, boolean>
-
-
-
-// class ProvidersData {
-//   homyData: Places
-//   flatData: Places
-//   constructor() {
-//     this.homyData = null
-//     this.flatData = null
-//   }
-//
-//   loadHomy = () => {
-//     if (!this.homyData) {
-//       return fetch('http://localhost:3000/places')
-//         .then((response) => {
-//           return response.text()
-//         })
-//         .then<Places>((responseText) => {
-//           return JSON.parse(responseText)
-//         }).then((data) => {
-//           this.homyData = data
-//           return data
-//         })
-//     } else return Promise.resolve(this.homyData)
-//   }
-//
-//   loadFlatRent = (searchData: SearchParam) => {
-//     if (!this.flatData) {
-//       return sdk.search(searchData)
-//         .then(data => {
-//           const lastIndex = this.homyData ? Object.keys(this.homyData).length : 0
-//           const formatData = {}
-//           data.forEach((el, index) => {
-//             console.log(el)
-//             formatData[lastIndex + index + 1] = {
-//               bookedDates: el.bookedDates,
-//               description: el.details,
-//               id: el.id,
-//               image: el.photos[0],
-//               name: el.title,
-//               price: el.price,
-//               remoteness: 0
-//             }
-//           })
-//           this.flatData = formatData
-//           console.log(this.flatData)
-//           return formatData
-//         })
-//     } else return Promise.resolve(this.flatData)
-//   }
-// }
-
-// const providersData = new ProvidersData()
-// const sdk = new FlatRentSdk()
 
 const search = (searchData: SearchParam, providers: SelectedProviders) => {
 
@@ -142,44 +68,10 @@ const search = (searchData: SearchParam, providers: SelectedProviders) => {
 
   Promise.all(checkedProviders)
     .then((results) => {
-      console.log([...results[0], ...results[1]])
-      // renderSearchResultsBlock(...results)
+      console.log(results.flat())
+      renderSearchResultsBlock(results.flat())
     })
 
-  // if (providers.homy && providers['flat-rent']) {
-  //   providersData.loadHomy().then((data) => {
-  //     for (const el in data) {
-  //       if (data[el].price > searchData.priceLimit) delete data[el]
-  //     }
-  //     return data
-  //   })
-  //     .then(data => {
-  //       const result = {...data}
-  //       providersData.loadFlatRent(searchData).then((dataFR) => {
-  //         if(!Object.keys(result).length) renderSearchResultsBlock()
-  //         else renderSearchResultsBlock({...result, ...dataFR})
-  //       })
-  //     })
-  //   return
-  // }
-  //
-  // if (providers.homy) {
-  //   providersData.loadHomy().then((data) => {
-  //     for (const el in data) {
-  //       if (data[el].price > searchData.priceLimit) delete data[el]
-  //     }
-  //     if(!Object.keys(data).length) renderSearchResultsBlock()
-  //     else renderSearchResultsBlock(data)
-  //   })
-  //   return
-  // }
-  // if (providers['flat-rent']) {
-  //   providersData.loadFlatRent(searchData).then((data) => {
-  //     if(!Object.keys(data).length) renderSearchResultsBlock()
-  //     else renderSearchResultsBlock(data)
-  //   })
-  //   return;
-  // }
 }
 
 export const searchHandler = (): void => {

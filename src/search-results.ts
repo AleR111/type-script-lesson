@@ -36,13 +36,14 @@ const isFavoriteItem = (obj: unknown): obj is FavoritePlaces => {
 }
 
 const toggleFavoriteItem = (e: Event, data: Place[]): void => {
+
   const button = e.target as HTMLInputElement
 
   if (!button.classList.contains('favorites')) return
 
   const favoriteItemsJSON = localStorage.getItem('favoriteItems')
   const favoriteItems = JSON.parse(favoriteItemsJSON)
-  const favoriteItemsData = isFavoriteItem(favoriteItems) ? favoriteItems : {} as Place[]
+  const favoriteItemsData = isFavoriteItem(favoriteItems) ? favoriteItems : {} as FavoritePlaces
 
   const favoritesAmountJSON = localStorage.getItem('favoritesAmount')
   const favoritesAmount = JSON.parse(favoritesAmountJSON)
@@ -51,10 +52,12 @@ const toggleFavoriteItem = (e: Event, data: Place[]): void => {
   if (!favoriteItemsData[button.id]) {
     button.classList.add('active')
 
+    const favoritePlace = data.find(el => el.id === button.id)
+
     const favoriteItem: Partial<Place> = {
-      id: data[button.id].id,
-      name: data[button.id].name,
-      image: data[button.id].image
+      id: favoritePlace.id,
+      name: favoritePlace.name,
+      image: favoritePlace.image
     }
 
     favoriteItemsData[button.id] = favoriteItem
@@ -72,29 +75,29 @@ const toggleFavoriteItem = (e: Event, data: Place[]): void => {
 }
 
 
-export function renderSearchResultsBlock(data?: Place[]) {
+export function renderSearchResultsBlock(data: Place[]) {
   console.log(data)
   let list = ''
 
-  if (!data) renderBlock('search-results-block',
+  if (!data.length) renderBlock('search-results-block',
     `<div class="search-results-header">
             <p>Не удалось найти</p>
           </div>`)
   else {
-    for (const el in data) {
+    data.forEach( el => {
       list += `<li class="result">
         <div class="result-container">
           <div class="result-img-container">
-            <div id="${el}" class="favorites"></div>
-            <img class="result-img" src="${data[el].image}" alt="">
+            <div id="${el.id}" class="favorites"></div>
+            <img class="result-img" src="${el.image[0]}" alt="">
           </div>	
           <div class="result-info">
             <div class="result-info--header">
-              <p>${data[el].name}</p>
-              <p class="price">${data[el].price}&#8381;</p>
+              <p>${el.name}</p>
+              <p class="price">${el.price}&#8381;</p>
             </div>
             <div class="result-info--map"><i class="map-icon"></i> 2.5км от вас</div>
-            <div class="result-info--descr">${data[el].description}</div>
+            <div class="result-info--descr">${el.description}</div>
             <div class="result-info--footer">
               <div>
                 <button>Забронировать</button>
@@ -103,7 +106,7 @@ export function renderSearchResultsBlock(data?: Place[]) {
           </div>
         </div>
       </li>`
-    }
+    })
     renderBlock(
       'search-results-block',
       `
