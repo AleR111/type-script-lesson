@@ -5,7 +5,7 @@ import { HomePlaceList } from './response.js';
 
 export class HomeProvider implements Provider {
   static provider = 'home'
-  private static apiURL = 'https://lockalhost:3040/places'
+  private static apiURL = 'http://localhost:3000/places'
 
   find(filter: SearchFilter): Promise<Place[]> {
     return fetch(HomeProvider.apiURL)
@@ -14,11 +14,11 @@ export class HomeProvider implements Provider {
       .then((filteredData) => this.convertToStandard(filteredData))
   }
 
-  private filterData(data: HomePlaceList, filter: SearchFilter): Promise<HomePlaceList> {
+  private filterData(data: HomePlaceList, filter: SearchFilter): HomePlaceList {
     for (const el in data) {
       if (data[el].price > filter.priceLimit) delete data[el]
     }
-    return Promise.resolve(data)
+    return data
   }
 
   private convertToStandard(data: HomePlaceList): Place[] {

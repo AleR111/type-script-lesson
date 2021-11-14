@@ -6,7 +6,7 @@ export interface PlaceListResponse {
 }
 
 export interface HomePlace {
-  id: number
+  id: string
   name: string
   description: string
   image: string

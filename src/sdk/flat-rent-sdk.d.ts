@@ -10,13 +10,13 @@ export interface SearchParam {
 }
 
 export interface FlatRentData {
-  bookedDates: Array<any>
+  bookedDates: []
   coordinates: [number, number]
   details: string
   id: string
   photos: Array<string>
   title: string
-  totalPrice: number
+  price: number
 }
 
 export class FlatRentSdk {

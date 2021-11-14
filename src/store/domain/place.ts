@@ -1,7 +1,7 @@
 export class Place {
   constructor(
     private readonly provider: string,
-    readonly originalId: number,
+    readonly originalId: string,
     readonly bookedDates: [],
     readonly description: string,
     readonly image: Array<string>,
