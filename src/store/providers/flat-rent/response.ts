@@ -12,7 +12,7 @@ export interface FlatRentPlace {
   photos: Array<string>
   coordinates: [number, number]
   bookedDates: []
-  price: number
+  totalPrice: number
 }
 
 export type FlatRentPlaceList = Array<FlatRentPlace>

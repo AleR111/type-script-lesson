@@ -4,6 +4,7 @@ import { renderSearchResultsBlock } from './search-results.js'
 import { SearchParam } from './sdk/flat-rent-sdk.js';
 import { HomeProvider } from './store/providers/home/home-provider.js';
 import { FlatRentProvider } from './store/providers/flat-rent/flat-rent-provider.js';
+import { sortPlaces } from './search-results.js'
 
 export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
   const nowDate = new Date();
@@ -68,8 +69,8 @@ const search = (searchData: SearchParam, providers: SelectedProviders) => {
 
   Promise.all(checkedProviders)
     .then((results) => {
-      console.log(results.flat())
-      renderSearchResultsBlock(results.flat())
+      const sortData = sortPlaces(results.flat(), 'cheap')
+      renderSearchResultsBlock(sortData)
     })
 
 }

@@ -74,16 +74,44 @@ const toggleFavoriteItem = (e: Event, data: Place[]): void => {
   reRenderUserBlock(numberFavoritesAmount)
 }
 
+const sortByPriceCheap = (one, two) => {
+  if (one.price > two.price) {
+    return 1
+  } else if (one.price < two.price) {
+    return -1
+  } else {
+    return 0
+  }
+}
+
+const sortByPriceExpensive = (one, two) => {
+  if (one.price < two.price) {
+    return 1
+  } else if (one.price > two.price) {
+    return -1
+  } else {
+    return 0
+  }
+}
+
+export const sortPlaces = (data, param) => {
+  switch (param) {
+  case 'cheap':
+    data.sort(sortByPriceCheap)
+    break
+  case 'expensive':
+    data.sort(sortByPriceExpensive)
+    break
+  }
+
+  return data
+}
 
 export function renderSearchResultsBlock(data: Place[]) {
-  console.log(data)
-  let list = ''
 
-  if (!data.length) renderBlock('search-results-block',
-    `<div class="search-results-header">
-            <p>Не удалось найти</p>
-          </div>`)
-  else {
+  const renderList = (data) => {
+    let list = ''
+
     data.forEach( el => {
       list += `<li class="result">
         <div class="result-container">
@@ -107,6 +135,16 @@ export function renderSearchResultsBlock(data: Place[]) {
         </div>
       </li>`
     })
+
+    renderBlock('place-list', list)
+  }
+
+
+  if (!data.length) renderBlock('search-results-block',
+    `<div class="search-results-header">
+            <p>Не удалось найти</p>
+          </div>`)
+  else {
     renderBlock(
       'search-results-block',
       `
@@ -114,22 +152,30 @@ export function renderSearchResultsBlock(data: Place[]) {
         <p>Результаты поиска</p>
         <div class="search-results-filter">
             <span><i class="icon icon-filter"></i> Сортировать:</span>
-            <select>
-                <option selected="">Сначала дешёвые</option>
-                <option selected="">Сначала дорогие</option>
-                <option>Сначала ближе</option>
+            <select id="placesSort">
+                <option selected value="cheap">Сначала дешёвые</option>
+                <option value="expensive">Сначала дорогие</option>
+                <option value="closer">Сначала ближе</option>
             </select>
         </div>
     </div>
-    <ul class="results-list">
-        ${list}
+    <ul id="place-list" class="results-list">
     </ul>
     `
     );
+    renderList(data)
 
     document.getElementsByClassName('results-list')[0]
       .addEventListener('click', (e: Event): void => {
         toggleFavoriteItem(e, data)
+      })
+
+    document.getElementById('placesSort')
+      .addEventListener('change', (e) => {
+        const position = e.target.selectedIndex
+        const value = e.target.options[position].value
+        const sortData = sortPlaces(data, value)
+        renderList(sortData)
       })
   }
 }

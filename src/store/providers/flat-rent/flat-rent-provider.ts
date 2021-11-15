@@ -23,7 +23,7 @@ export class FlatRentProvider implements Provider {
         el.details,
         [...el.photos],
         el.title,
-        el.price,
+        el.totalPrice,
       )
     })
 
