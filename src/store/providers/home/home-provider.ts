@@ -1,5 +1,5 @@
 import { Provider } from '../../domain/provider.js';
-import {SearchFilter} from '../../domain/search-filter.js';
+import { SearchFilter } from '../../domain/search-filter.js';
 import { Place } from '../../domain/place.js';
 import { HomePlaceList } from './response.js';
 

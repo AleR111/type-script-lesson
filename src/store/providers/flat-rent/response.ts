@@ -1,10 +1,3 @@
-export interface PlaceListResponse {
-  error?: string
-  places: {
-    [key: string]: FlatRentPlace
-  }
-}
-
 export interface FlatRentPlace {
   id: string
   title: string

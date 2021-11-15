@@ -16,7 +16,7 @@ export interface FlatRentData {
   id: string
   photos: Array<string>
   title: string
-  price: number
+  totalPrice: number
 }
 
 export class FlatRentSdk {

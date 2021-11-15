@@ -74,6 +74,8 @@ const toggleFavoriteItem = (e: Event, data: Place[]): void => {
   reRenderUserBlock(numberFavoritesAmount)
 }
 
+export type sortParam = 'cheap' | 'expensive'
+
 const sortByPriceCheap = (one, two) => {
   if (one.price > two.price) {
     return 1
@@ -94,7 +96,7 @@ const sortByPriceExpensive = (one, two) => {
   }
 }
 
-export const sortPlaces = (data, param) => {
+export const sortPlaces = (data: Place[], param: sortParam): Place[] => {
   switch (param) {
   case 'cheap':
     data.sort(sortByPriceCheap)
@@ -109,7 +111,7 @@ export const sortPlaces = (data, param) => {
 
 export function renderSearchResultsBlock(data: Place[]) {
 
-  const renderList = (data) => {
+  const renderList = (data: Place[]): void => {
     let list = ''
 
     data.forEach( el => {
@@ -172,8 +174,10 @@ export function renderSearchResultsBlock(data: Place[]) {
 
     document.getElementById('placesSort')
       .addEventListener('change', (e) => {
-        const position = e.target.selectedIndex
-        const value = e.target.options[position].value
+        const elemTarget = e.target as HTMLSelectElement
+        const position = elemTarget.selectedIndex
+        const value = elemTarget.options[position].value
+        if (value !== 'cheap' && value !== 'expensive') return
         const sortData = sortPlaces(data, value)
         renderList(sortData)
       })
