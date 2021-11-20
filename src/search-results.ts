@@ -14,7 +14,7 @@ export function renderSearchStubBlock() {
   );
 }
 
-export function renderEmptyOrErrorSearchBlock(reasonMessage) {
+export function renderEmptyOrErrorSearchBlock(reasonMessage: string) {
   renderBlock(
     'search-results-block',
     `
@@ -76,7 +76,7 @@ const toggleFavoriteItem = (e: Event, data: Place[]): void => {
 
 export type sortParam = 'cheap' | 'expensive'
 
-const sortByPriceCheap = (one, two) => {
+const sortByPriceCheap = (one: Place, two: Place) => {
   if (one.price > two.price) {
     return 1
   } else if (one.price < two.price) {
@@ -86,7 +86,7 @@ const sortByPriceCheap = (one, two) => {
   }
 }
 
-const sortByPriceExpensive = (one, two) => {
+const sortByPriceExpensive = (one: Place, two: Place) => {
   if (one.price < two.price) {
     return 1
   } else if (one.price > two.price) {

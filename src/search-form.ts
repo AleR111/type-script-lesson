@@ -55,17 +55,20 @@ export function renderSearchFormBlock(checkInDate?: Date, checkOutDate?: Date) {
 }
 
 export type SelectedProviders = Record<string, boolean>
+interface AllProviders {
+  home: HomeProvider
+  flatRent: FlatRentProvider
+}
 
 const search = (searchData: SearchParam, providers: SelectedProviders) => {
 
-  const allProviders = {
+  const allProviders: AllProviders = {
     home: new HomeProvider(),
     flatRent: new FlatRentProvider()
   }
 
-  const checkedProviders: Promise<Place[]>[] = Object.keys(providers).map(el => {
-    if (providers[el]) return allProviders[el].find(searchData)
-    return []
+  const checkedProviders: Promise<Place[]>[] = Object.keys(providers).map((el: string) => {
+    if (providers[el] && el === 'home' || el === 'flatRent') return allProviders[el].find(searchData)
   })
 
   Promise.all(checkedProviders)
