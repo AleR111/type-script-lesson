@@ -1,5 +1,5 @@
 import { renderBlock } from './lib.js';
-import {Place, Places} from './search-form.js'
+import { Place } from './store/domain/place.js'
 import {reRenderUserBlock} from './index.js';
 
 export function renderSearchStubBlock() {
@@ -35,14 +35,15 @@ const isFavoriteItem = (obj: unknown): obj is FavoritePlaces => {
     && obj !== null
 }
 
-const toggleFavoriteItem = (e: Event, data: Places): void => {
+const toggleFavoriteItem = (e: Event, data: Place[]): void => {
+
   const button = e.target as HTMLInputElement
 
   if (!button.classList.contains('favorites')) return
 
   const favoriteItemsJSON = localStorage.getItem('favoriteItems')
   const favoriteItems = JSON.parse(favoriteItemsJSON)
-  const favoriteItemsData = isFavoriteItem(favoriteItems) ? favoriteItems : {} as Places
+  const favoriteItemsData = isFavoriteItem(favoriteItems) ? favoriteItems : {} as FavoritePlaces
 
   const favoritesAmountJSON = localStorage.getItem('favoritesAmount')
   const favoritesAmount = JSON.parse(favoritesAmountJSON)
@@ -51,10 +52,12 @@ const toggleFavoriteItem = (e: Event, data: Places): void => {
   if (!favoriteItemsData[button.id]) {
     button.classList.add('active')
 
+    const favoritePlace = data.find(el => el.id === button.id)
+
     const favoriteItem: Partial<Place> = {
-      id: data[button.id].id,
-      name: data[button.id].name,
-      image: data[button.id].image
+      id: favoritePlace.id,
+      name: favoritePlace.name,
+      image: favoritePlace.image
     }
 
     favoriteItemsData[button.id] = favoriteItem
@@ -71,30 +74,60 @@ const toggleFavoriteItem = (e: Event, data: Places): void => {
   reRenderUserBlock(numberFavoritesAmount)
 }
 
+export type sortParam = 'cheap' | 'expensive'
 
-export function renderSearchResultsBlock(data?: Places) {
-  console.log(data)
-  let list = ''
+const sortByPriceCheap = (one, two) => {
+  if (one.price > two.price) {
+    return 1
+  } else if (one.price < two.price) {
+    return -1
+  } else {
+    return 0
+  }
+}
 
-  if (!data) renderBlock('search-results-block',
-    `<div class="search-results-header">
-            <p>Не удалось найти</p>
-          </div>`)
-  else {
-    for (const el in data) {
+const sortByPriceExpensive = (one, two) => {
+  if (one.price < two.price) {
+    return 1
+  } else if (one.price > two.price) {
+    return -1
+  } else {
+    return 0
+  }
+}
+
+export const sortPlaces = (data: Place[], param: sortParam): Place[] => {
+  switch (param) {
+  case 'cheap':
+    data.sort(sortByPriceCheap)
+    break
+  case 'expensive':
+    data.sort(sortByPriceExpensive)
+    break
+  }
+
+  return data
+}
+
+export function renderSearchResultsBlock(data: Place[]) {
+
+  const renderList = (data: Place[]): void => {
+    let list = ''
+
+    data.forEach( el => {
       list += `<li class="result">
         <div class="result-container">
           <div class="result-img-container">
-            <div id="${el}" class="favorites"></div>
-            <img class="result-img" src="${data[el].image}" alt="">
+            <div id="${el.id}" class="favorites"></div>
+            <img class="result-img" src="${el.image[0]}" alt="">
           </div>	
           <div class="result-info">
             <div class="result-info--header">
-              <p>${data[el].name}</p>
-              <p class="price">${data[el].price}&#8381;</p>
+              <p>${el.name}</p>
+              <p class="price">${el.price}&#8381;</p>
             </div>
             <div class="result-info--map"><i class="map-icon"></i> 2.5км от вас</div>
-            <div class="result-info--descr">${data[el].description}</div>
+            <div class="result-info--descr">${el.description}</div>
             <div class="result-info--footer">
               <div>
                 <button>Забронировать</button>
@@ -103,7 +136,17 @@ export function renderSearchResultsBlock(data?: Places) {
           </div>
         </div>
       </li>`
-    }
+    })
+
+    renderBlock('place-list', list)
+  }
+
+
+  if (!data.length) renderBlock('search-results-block',
+    `<div class="search-results-header">
+            <p>Не удалось найти</p>
+          </div>`)
+  else {
     renderBlock(
       'search-results-block',
       `
@@ -111,22 +154,32 @@ export function renderSearchResultsBlock(data?: Places) {
         <p>Результаты поиска</p>
         <div class="search-results-filter">
             <span><i class="icon icon-filter"></i> Сортировать:</span>
-            <select>
-                <option selected="">Сначала дешёвые</option>
-                <option selected="">Сначала дорогие</option>
-                <option>Сначала ближе</option>
+            <select id="placesSort">
+                <option selected value="cheap">Сначала дешёвые</option>
+                <option value="expensive">Сначала дорогие</option>
+                <option value="closer">Сначала ближе</option>
             </select>
         </div>
     </div>
-    <ul class="results-list">
-        ${list}
+    <ul id="place-list" class="results-list">
     </ul>
     `
     );
+    renderList(data)
 
     document.getElementsByClassName('results-list')[0]
       .addEventListener('click', (e: Event): void => {
         toggleFavoriteItem(e, data)
+      })
+
+    document.getElementById('placesSort')
+      .addEventListener('change', (e) => {
+        const elemTarget = e.target as HTMLSelectElement
+        const position = elemTarget.selectedIndex
+        const value = elemTarget.options[position].value
+        if (value !== 'cheap' && value !== 'expensive') return
+        const sortData = sortPlaces(data, value)
+        renderList(sortData)
       })
   }
 }

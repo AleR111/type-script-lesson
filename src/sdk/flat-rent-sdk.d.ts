@@ -10,7 +10,7 @@ export interface SearchParam {
 }
 
 export interface FlatRentData {
-  bookedDates: Array<any>
+  bookedDates: []
   coordinates: [number, number]
   details: string
   id: string
