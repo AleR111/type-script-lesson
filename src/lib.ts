@@ -12,10 +12,11 @@ interface actionToast {
 
 export function renderBlock(elementId: string, html: string) {
   const element = document.getElementById(elementId);
+  if (!element) return
   element.innerHTML = html;
 }
 
-export function renderToast(message: messageToast, action: actionToast) {
+export function renderToast(message: messageToast | null, action: actionToast | null) {
   let messageText = '';
 
   if (message != null) {

@@ -67,8 +67,9 @@ const search = (searchData: SearchParam, providers: SelectedProviders) => {
     flatRent: new FlatRentProvider()
   }
 
-  const checkedProviders: Promise<Place[]>[] = Object.keys(providers).map((el: string) => {
+  const checkedProviders: (Promise<Place[]> | [])[] = Object.keys(providers).map((el: string) => {
     if (providers[el] && el === 'home' || el === 'flatRent') return allProviders[el].find(searchData)
+    return []
   })
 
   Promise.all(checkedProviders)
