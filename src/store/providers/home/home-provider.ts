@@ -15,6 +15,7 @@ export class HomeProvider implements Provider {
   }
 
   private filterData(data: HomePlaceList, filter: SearchFilter): HomePlaceList {
+    if (!filter.priceLimit) filter.priceLimit = 0
     for (const el in data) {
       if (data[el].price > filter.priceLimit) delete data[el]
     }

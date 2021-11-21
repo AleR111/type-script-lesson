@@ -14,7 +14,7 @@ export function renderSearchStubBlock() {
   );
 }
 
-export function renderEmptyOrErrorSearchBlock(reasonMessage) {
+export function renderEmptyOrErrorSearchBlock(reasonMessage: string) {
   renderBlock(
     'search-results-block',
     `
@@ -42,11 +42,15 @@ const toggleFavoriteItem = (e: Event, data: Place[]): void => {
   if (!button.classList.contains('favorites')) return
 
   const favoriteItemsJSON = localStorage.getItem('favoriteItems')
-  const favoriteItems = JSON.parse(favoriteItemsJSON)
+  let favoriteItems
+  if (!favoriteItemsJSON) favoriteItems = null
+  else favoriteItems = JSON.parse(favoriteItemsJSON)
   const favoriteItemsData = isFavoriteItem(favoriteItems) ? favoriteItems : {} as FavoritePlaces
 
   const favoritesAmountJSON = localStorage.getItem('favoritesAmount')
-  const favoritesAmount = JSON.parse(favoritesAmountJSON)
+  let favoritesAmount
+  if (!favoritesAmountJSON) favoritesAmount = null
+  else favoritesAmount = JSON.parse(favoritesAmountJSON)
   let numberFavoritesAmount = typeof favoritesAmount === 'number' ? favoritesAmount : 0
 
   if (!favoriteItemsData[button.id]) {
@@ -55,9 +59,9 @@ const toggleFavoriteItem = (e: Event, data: Place[]): void => {
     const favoritePlace = data.find(el => el.id === button.id)
 
     const favoriteItem: Partial<Place> = {
-      id: favoritePlace.id,
-      name: favoritePlace.name,
-      image: favoritePlace.image
+      id: favoritePlace?.id,
+      name: favoritePlace?.name,
+      image: favoritePlace?.image
     }
 
     favoriteItemsData[button.id] = favoriteItem
@@ -76,7 +80,7 @@ const toggleFavoriteItem = (e: Event, data: Place[]): void => {
 
 export type sortParam = 'cheap' | 'expensive'
 
-const sortByPriceCheap = (one, two) => {
+const sortByPriceCheap = (one: Place, two: Place) => {
   if (one.price > two.price) {
     return 1
   } else if (one.price < two.price) {
@@ -86,7 +90,7 @@ const sortByPriceCheap = (one, two) => {
   }
 }
 
-const sortByPriceExpensive = (one, two) => {
+const sortByPriceExpensive = (one: Place, two: Place) => {
   if (one.price < two.price) {
     return 1
   } else if (one.price > two.price) {
@@ -173,7 +177,7 @@ export function renderSearchResultsBlock(data: Place[]) {
       })
 
     document.getElementById('placesSort')
-      .addEventListener('change', (e) => {
+      ?.addEventListener('change', (e) => {
         const elemTarget = e.target as HTMLSelectElement
         const position = elemTarget.selectedIndex
         const value = elemTarget.options[position].value

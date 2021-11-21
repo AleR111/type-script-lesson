@@ -6,16 +6,18 @@ import {setLocalStorage, getUserData, getFavoritesAmount, isUserData} from './ge
 
 setLocalStorage()
 const favoritesAmount = getFavoritesAmount()
-const numberFavoritesAmount = typeof favoritesAmount === 'number' ? favoritesAmount : null
+const numberFavoritesAmount = typeof favoritesAmount === 'number' ? favoritesAmount : 0
 
 const gettingUserData = getUserData()
 const userData = isUserData(gettingUserData)  ? gettingUserData : null
 
 export const reRenderUserBlock = (numberFavoritesAmount: number): void => {
+  if (!userData) return
   renderUserBlock(userData.userName, userData.avatarUrl, numberFavoritesAmount);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  if (!userData) return
   renderUserBlock(userData.userName, userData.avatarUrl, numberFavoritesAmount);
   renderSearchFormBlock();
   renderSearchStubBlock();
@@ -31,7 +33,7 @@ window.addEventListener('DOMContentLoaded', () => {
       },
     }
   );
-  document.getElementById('search').addEventListener('click', (e) => {
+  document.getElementById('search')?.addEventListener('click', (e) => {
     e.preventDefault()
     searchHandler()
   })
